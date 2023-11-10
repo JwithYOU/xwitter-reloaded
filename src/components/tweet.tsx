@@ -52,9 +52,9 @@ export default function Tweet({ username, photo, xweet, userId, id }: ITweet) {
     const ok = confirm("Are you sure you want to delete this tweet?");
     if (!ok || user?.uid !== userId) return;
     try {
-      await deleteDoc(doc(db, "tweets", id));
+      await deleteDoc(doc(db, "xweets", id));
       if (photo) {
-        const photoRef = ref(storage, `tweets/${user.uid}/${id}`);
+        const photoRef = ref(storage, `xweets/${user.uid}/${id}`);
         await deleteObject(photoRef);
       }
     } catch (e) {
