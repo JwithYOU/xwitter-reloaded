@@ -1,3 +1,4 @@
+import { useState } from "react";
 import { styled } from "styled-components";
 import { ITweet } from "./timeline";
 import { auth, db, storage } from "../firebase";
@@ -47,9 +48,11 @@ const DeleteButton = styled.button`
 `;
 
 export default function Tweet({ username, photo, xweet, userId, id }: ITweet) {
+  const [showXweet, setShowXweet] = useState(true);
   const user = auth.currentUser;
   const onDelete = async () => {
     const ok = confirm("Are you sure you want to delete this tweet?");
+    setShowXweet(false);
     if (!ok || user?.uid !== userId) return;
     try {
       await deleteDoc(doc(db, "xweets", id));
@@ -64,15 +67,19 @@ export default function Tweet({ username, photo, xweet, userId, id }: ITweet) {
     }
   };
   return (
-    <Wrapper>
-      <Column>
-        <Username>{username}</Username>
-        <Payload>{xweet}</Payload>
-        {user?.uid === userId ? (
-          <DeleteButton onClick={onDelete}>Delete</DeleteButton>
-        ) : null}
-      </Column>
-      <Column>{photo ? <Photo src={photo} /> : null}</Column>
-    </Wrapper>
+    <>
+      {showXweet ? (
+        <Wrapper>
+          <Column>
+            <Username>{username}</Username>
+            <Payload>{xweet}</Payload>
+            {user?.uid === userId ? (
+              <DeleteButton onClick={onDelete}>Delete</DeleteButton>
+            ) : null}
+          </Column>
+          <Column>{photo ? <Photo src={photo} /> : null}</Column>
+        </Wrapper>
+      ) : null}
+    </>
   );
 }
